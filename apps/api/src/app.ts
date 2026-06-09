@@ -21,6 +21,12 @@ import { diagnosisRoutes } from "./modules/diagnosis/diagnosis.routes.js";
 import { roadmapRoutes } from "./modules/roadmap/roadmap.routes.js";
 import { cvRoutes } from "./modules/cv/cv.routes.js";
 import { notificationRoutes } from "./modules/notifications/notifications.routes.js";
+import { chatRoutes } from "./modules/chat/chat.routes.js";
+import { interviewRoutes } from "./modules/interviews/interviews.routes.js";
+import { emailRoutes } from "./modules/email/email.routes.js";
+import { importRoutes } from "./modules/import/import.routes.js";
+import { webhookRoutes } from "./modules/webhooks/webhooks.routes.js";
+import { analyticsRoutes } from "./modules/analytics/analytics.routes.js";
 
 export async function buildApp() {
   const app = Fastify({
@@ -64,6 +70,12 @@ export async function buildApp() {
   await app.register(roadmapRoutes, { prefix: "/api/v1/roadmap" });
   await app.register(cvRoutes, { prefix: "/api/v1/profile/cv" });
   await app.register(notificationRoutes, { prefix: "/api/v1/notifications" });
+  await app.register(chatRoutes, { prefix: "/api/v1/chat" });
+  await app.register(interviewRoutes, { prefix: "/api/v1/interviews" });
+  await app.register(emailRoutes, { prefix: "/api/v1/email" });
+  await app.register(importRoutes, { prefix: "/api/v1/import" });
+  await app.register(webhookRoutes, { prefix: "/api/v1/webhooks" });
+  await app.register(analyticsRoutes, { prefix: "/api/v1/analytics" });
 
   return app;
 }

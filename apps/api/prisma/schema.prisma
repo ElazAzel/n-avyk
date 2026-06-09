@@ -98,6 +98,13 @@ model User {
 
   refreshTokens  RefreshToken[]
   notifications  Notification[]
+  conversationParticipants ConversationParticipant[]
+  sentMessages             Message[]
+  interviewAsEmployer      Interview[] @relation("interviewEmployer")
+  interviewAsCandidate     Interview[] @relation("interviewCandidate")
+  importLogs               ImportLog[]
+  webhooks                 Webhook[]
+  analyticsEvents          AnalyticsEvent[]
 
   @@index([email])
   @@index([role])
@@ -338,6 +345,7 @@ model Opportunity {
 
   applications    Application[]
   savedBy         SavedOpportunity[]
+  interviews      Interview[]
 
   @@index([companyId])
   @@index([directionId])
@@ -665,4 +673,148 @@ model RefreshToken {
 
   @@index([userId])
   @@map("refresh_tokens")
+}
+
+model Conversation {
+  id        String          @id @default(uuid())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  lastReadAt     DateTime?
+  joinedAt       DateTime     @default(now())
+
+  @@unique([conversationId, userId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id])
+  content        String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+}
+
+enum InterviewType {
+  PHONE
+  VIDEO
+  ONSITE
+  TEST_TASK
+}
+
+model Interview {
+  id              String          @id @default(uuid())
+  opportunityId   String?
+  opportunity     Opportunity?    @relation(fields: [opportunityId], references: [id])
+  employerId      String
+  employer        User            @relation("interviewEmployer", fields: [employerId], references: [id])
+  candidateId     String
+  candidate       User            @relation("interviewCandidate", fields: [candidateId], references: [id])
+
+  type            InterviewType   @default(VIDEO)
+  status          InterviewStatus @default(SCHEDULED)
+  title           String
+  description     String?
+  location        String?
+  meetingLink     String?
+  startsAt        DateTime
+  endsAt          DateTime
+  timezone        String          @default("Asia/Almaty")
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([employerId])
+  @@index([candidateId])
+  @@map("interviews")
+}
+
+model ImportLog {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  source      String   // "HEADHUNTER", "LINKEDIN"
+  sourceUrl   String
+  rawData     Json?
+  status      String   @default("PENDING") // PENDING, PROCESSED, FAILED
+  error       String?
+  createdAt   DateTime @default(now())
+  processedAt DateTime?
+
+  @@map("import_logs")
+}
+
+model Webhook {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  url       String
+  secret    String
+  events    String[] // ["opportunity.created", "application.submitted", etc.]
+  isActive  Boolean  @default(true)
+  lastTriggeredAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deliveries EventDelivery[]
+
+  @@map("webhooks")
+}
+
+model EventDelivery {
+  id          String   @id @default(uuid())
+  webhookId   String
+  webhook     Webhook  @relation(fields: [webhookId], references: [id])
+  event       String
+  payload     Json
+  status      String   @default("PENDING") // PENDING, DELIVERED, FAILED
+  statusCode  Int?
+  response    String?
+  attempts    Int      @default(0)
+  createdAt   DateTime @default(now())
+  deliveredAt DateTime?
+
+  @@index([webhookId])
+  @@map("event_deliveries")
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid())
+  event     String   // page_view, application_submitted, search_performed, etc.
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id])
+  metadata  Json?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([event, createdAt])
+  @@index([userId])
+  @@map("analytics_events")
 }

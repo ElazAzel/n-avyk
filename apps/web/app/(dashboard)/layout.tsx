@@ -5,8 +5,11 @@ const NAV_ITEMS = [
   { href: "/opportunities", label: "Возможности" },
   { href: "/opportunities/saved", label: "Сохранённые" },
   { href: "/tracker", label: "Трекер" },
+  { href: "/messages", label: "Сообщения" },
+  { href: "/interviews", label: "Интервью" },
   { href: "/profile", label: "Профиль" },
   { href: "/diagnosis", label: "Диагностика" },
+  { href: "/import", label: "Импорт профиля" },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
