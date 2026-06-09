@@ -1,0 +1,40 @@
+---
+description: NAVYK general development rules
+globs: **/*
+alwaysApply: true
+---
+
+# NAVYK General Rules
+
+## Mission
+NAVYK is a Career OS for students. Every feature must help users progress toward career outcomes.
+
+## TypeScript
+- Strict mode. NO `any`. NO `@ts-ignore` without explanation.
+- All public functions must have JSDoc with description and parameters.
+- Use discriminated unions for statuses (CareerStatus, ApplicationStatus).
+- Always type API responses via shared types from `@navyk/types`.
+
+## Naming
+- Component files: PascalCase (UserDashboard.tsx)
+- Utility files: camelCase (formatDate.ts)
+- API routes: kebab-case (/career-roadmap)
+- Constants: SCREAMING_SNAKE_CASE
+- Variables/functions: camelCase
+- Interfaces: PascalCase, NO I-prefix (User not IUser)
+- Enums: PascalCase (ApplicationStatus, UserRole)
+
+## Commits (Conventional Commits)
+- feat: new feature
+- fix: bug fix
+- refactor: refactoring
+- docs: documentation
+- test: tests
+- chore: config, dependencies
+
+## Forbidden
+- Hardcoded strings in Russian/Kazakh in code — use i18n keys only
+- Magic numbers without named constants
+- Direct DB queries from frontend — API only
+- Secrets in code — .env only
+- Mutating props or state directly

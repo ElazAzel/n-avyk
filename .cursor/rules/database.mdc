@@ -1,0 +1,26 @@
+---
+description: NAVYK database rules
+globs: apps/api/prisma/**/*
+alwaysApply: false
+---
+
+# NAVYK Database Rules
+
+## Principles
+- Every table: id (uuid), createdAt, updatedAt
+- Soft delete: deletedAt, isActive for main entities
+- All enums in Prisma schema as enum types
+- Explicit FK with named relations
+- Text fields with potential search: add index
+
+## Naming
+- Tables: snake_case, plural (users, opportunities)
+- Fields: camelCase in Prisma schema (firstName, createdAt)
+- Indexes: idx_table_field
+- FK: table_id pattern (userId, opportunityId)
+
+## Forbidden
+- SELECT * in production code
+- Transactions longer than 5 seconds
+- Storing passwords/tokens in plaintext
+- Storing files in DB (S3 URLs only)

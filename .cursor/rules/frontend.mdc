@@ -1,0 +1,44 @@
+---
+description: NAVYK frontend rules (apps/web)
+globs: apps/web/**/*
+alwaysApply: false
+---
+
+# NAVYK Frontend Rules
+
+## Design System (CSS Variables)
+- --navyk-blue: #1A56FF (primary accent)
+- --navyk-blue-light: #EBF0FF
+- --navyk-blue-dark: #0D2EB8
+- Semantic: --success (#10B981), --warning (#F59E0B), --error (#EF4444)
+- Readiness Score: --score-low (#EF4444), --score-mid (#F59E0B), --score-high (#10B981)
+
+## Component Requirements
+- Explicit TypeScript types for all props
+- Loading state (skeleton preferred)
+- Empty state with actionable message
+- Error state
+- Responsive (mobile-first)
+
+## Forbidden in Components
+- Direct fetch requests (React Query hooks only)
+- Business logic (hooks only)
+- Inline styles (className + Tailwind only)
+- useEffect for derived state
+
+## Page Structure (Next.js App Router)
+```
+app/(dashboard)/route/
+├── page.tsx           # Server Component
+├── loading.tsx        # Suspense fallback
+├── error.tsx          # Error boundary
+└── _components/
+    └── FeatureHeader.tsx
+```
+
+## UX Patterns
+1. Optimistic UI for status changes
+2. Progressive disclosure
+3. Instant feedback (< 100ms)
+4. Empty states with actionable messages
+5. Skeleton loading over spinners

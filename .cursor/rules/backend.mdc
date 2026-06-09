@@ -1,0 +1,60 @@
+---
+description: NAVYK backend rules (apps/api)
+globs: apps/api/**/*
+alwaysApply: false
+---
+
+# NAVYK Backend Rules
+
+## Architecture Layers (strict)
+```
+Route Handler (controller)
+      ↓
+Service Layer (business logic)
+      ↓
+Repository Layer (Prisma)
+      ↓
+Database (PostgreSQL)
+```
+
+Business logic ONLY in Service. Route handler — parse request, call service, format response. Repository — CRUD only.
+
+## API Response Format
+```typescript
+// Success
+{ success: true, data: T, meta?: { page, limit, total } }
+
+// Error
+{ success: false, error: { code: string, message: string, details?: unknown } }
+```
+
+## HTTP Statuses
+- 200: success (GET, PUT, PATCH)
+- 201: created (POST)
+- 204: deleted (DELETE)
+- 400: validation error
+- 401: not authenticated
+- 403: forbidden
+- 404: not found
+- 409: conflict
+- 422: business logic error
+- 500: server error
+
+## Versioning
+All routes: /api/v1/...
+
+## Database (Prisma)
+- NEVER edit applied migrations
+- Each migration is atomic and reversible
+- Migration names describe WHAT changes
+- All enum values — uppercase
+- Soft delete: deletedAt + isActive for all main entities
+- Indexes: all FK fields, WHERE fields, sort fields
+
+## Security
+- Sanitize HTML input
+- Rate limiting: auth (5 req/min), AI generation (10 req/hour)
+- Check ownership before every UPDATE/DELETE
+- Passwords: bcrypt cost factor 12
+- JWT: access token 15min, refresh token 30 days
+- CORS: only allowed origins from .env
