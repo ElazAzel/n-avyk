@@ -15,6 +15,8 @@ import { applicationRoutes } from "./modules/applications/applications.routes.js
 import { profileRoutes } from "./modules/profile/profile.routes.js";
 import { universityRoutes } from "./modules/university/university.routes.js";
 import { employerRoutes } from "./modules/employer/employer.routes.js";
+import { adminRoutes } from "./modules/admin/admin.routes.js";
+import { searchRoutes } from "./modules/search/search.routes.js";
 import { diagnosisRoutes } from "./modules/diagnosis/diagnosis.routes.js";
 import { roadmapRoutes } from "./modules/roadmap/roadmap.routes.js";
 import { cvRoutes } from "./modules/cv/cv.routes.js";
@@ -56,6 +58,8 @@ export async function buildApp() {
   await app.register(profileRoutes, { prefix: "/api/v1/profile" });
   await app.register(universityRoutes, { prefix: "/api/v1/university" });
   await app.register(employerRoutes, { prefix: "/api/v1/employer" });
+  await app.register(adminRoutes, { prefix: "/api/v1/admin" });
+  await app.register(searchRoutes, { prefix: "/api/v1/search" });
   await app.register(diagnosisRoutes, { prefix: "/api/v1/diagnosis" });
   await app.register(roadmapRoutes, { prefix: "/api/v1/roadmap" });
   await app.register(cvRoutes, { prefix: "/api/v1/profile/cv" });
